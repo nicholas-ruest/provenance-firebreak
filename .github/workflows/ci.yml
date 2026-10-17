@@ -6,10 +6,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-        with: { components: rustfmt, clippy }
+        with:
+          toolchain: 1.99.0
+          components: rustfmt, clippy
       - run: cargo fmt --check
       - run: cargo clippy --all-targets --all-features -- -D warnings
-      - run: cargo test --locked
+      - run: cargo test --locked --workspace --all-features
       - run: cargo install cargo-deny --locked
       - run: cargo deny check
       - run: bash scripts/run-evaluation.sh
