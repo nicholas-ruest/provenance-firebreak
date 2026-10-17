@@ -1,0 +1,15 @@
+[package]
+name = "pf-planning"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+pf-policy = { path = "../pf-policy" }
+pf-exposure = { path = "../pf-exposure" }
+serde.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

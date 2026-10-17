@@ -1,0 +1,15 @@
+[package]
+name = "pf-ports"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+pf-attestation = { path = "../pf-attestation" }
+pf-events = { path = "../pf-events" }
+async-trait.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

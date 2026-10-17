@@ -1,0 +1,49 @@
+# Build artifacts
+*.pyc
+__pycache__/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Runtime
+*.log
+*.pid
+/tmp/
+/var/
+
+# Secrets
+.env
+.env.local
+secrets/
+*.pem
+*.key
+
+# RuvNet
+.swarm/
+.ruvnet/
+*.rvf
+
+# Sigstore artifacts
+*.sig
+*.att
+*.bundle
+
+# Rust build and runtime state
+/target/

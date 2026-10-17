@@ -1,0 +1,16 @@
+[package]
+name = "pf-service"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+pf-application = { path = "../pf-application" }
+pf-config = { path = "../pf-config" }
+pf-telemetry = { path = "../pf-telemetry" }
+serde.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

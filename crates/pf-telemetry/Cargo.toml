@@ -1,0 +1,15 @@
+[package]
+name = "pf-telemetry"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+pf-events = { path = "../pf-events" }
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+pf-identity = { path = "../pf-identity" }
+[lints]
+workspace = true

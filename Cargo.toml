@@ -1,0 +1,56 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/pf-identity",
+  "crates/pf-artifact",
+  "crates/pf-attestation",
+  "crates/pf-lineage",
+  "crates/pf-exposure",
+  "crates/pf-policy",
+  "crates/pf-planning",
+  "crates/pf-calibration",
+  "crates/pf-events",
+  "crates/pf-ports",
+  "crates/pf-adapter-sigstore",
+  "crates/pf-adapter-ruvector",
+  "crates/pf-adapter-rvf",
+  "crates/pf-graph",
+  "crates/pf-evidence",
+  "crates/pf-recovery",
+  "crates/pf-application",
+  "crates/pf-config",
+  "crates/pf-telemetry",
+  "crates/pf-service",
+  "crates/pf-cli",
+  "crates/pf-evaluation"
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+rust-version = "1.91"
+
+[workspace.dependencies]
+anyhow = "1.0"
+async-trait = "0.1"
+base64 = "0.22"
+clap = { version = "4.5", features = ["derive"] }
+rvf-crypto = "=0.2.0"
+ruvector-core = "=2.4.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+sigstore = { version = "=0.14.0", default-features = false, features = ["cosign", "rustls-tls"] }
+tempfile = "3.23"
+thiserror = "2.0"
+tokio = { version = "1.48", features = ["macros", "rt-multi-thread", "time"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = "deny"
+pedantic = "allow"

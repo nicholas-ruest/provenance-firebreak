@@ -1,0 +1,9 @@
+   Compiling pf-application v0.1.0 (/home/ruv/.local/share/dream-machine/runs/2026-10-16-provenance-firebreak/repo/crates/pf-application)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.18s
+     Running tests/end_to_end.rs (target/debug/deps/end_to_end-62ddb8858abeab20)
+
+running 2 tests
+test malformed_sigstore_bundle_fails_closed ... ok
+test signed_lineage_incident_preserves_tier_zero_and_seals_replay ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.28s
