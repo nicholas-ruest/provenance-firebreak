@@ -1,160 +1,50 @@
 # Provenance Firebreak — Research
 
-## 1. Research method and a disclosed limitation
+## Problem and selection
 
-This document is required to cite primary sources, not secondary summaries,
-and to never invent a fact it cannot support. In this session, the network
-research tools available to the agent (`WebSearch`, `WebFetch`) were denied
-by the session's permission mode, and the RuvNet grounding tool
-(`search_ruvnet`) and the `ruvector` MCP server both failed to connect
-(`CONNECTION_CLOSED` / `CONNECT_TIMEOUT`) before this document was written.
-No live fetch of any external page happened in this session.
+Software-supply-chain incident responders need more than an attestation checker: they must reconstruct which workloads received a suspect artifact, estimate containment risk from limited historical data, isolate the smallest safe set, preserve critical services, and retain cryptographically replayable evidence. Provenance Firebreak was selected because those responsibilities require a composite system rather than a validator, parser, wrapper, or benchmark harness.
 
-Consequently every claim below is labeled with one of:
+The intended users are platform security and SRE teams. The realistic workload is the checked-in incident fixture: a suspect worker artifact has propagated through a deployment graph containing a tier-0 payments root. Success means the system rejects untrusted provenance, recalls at least one analogous incident, computes a deterministic calibrated upper-risk bound, quarantines the exposed worker/root set without quarantining payments, verifies the RVF witness chain, and confirms recovery.
 
-- **Verified locally** — confirmed against a file or hash on this machine,
-  in this session (git blob hashes, local repo contents).
-- **Stated by the task brief** — taken directly from the ingredient
-  specification given for this project, not independently re-derived.
-- **From training knowledge, not live-verified this session** — a fact the
-  model holds with high confidence from pretraining (e.g., a well-known
-  project's existence, license, and general API shape) but did not
-  re-fetch from a primary URL this session. These are flagged so a human
-  can re-verify before Phase 2 pins any lockfile or commit SHA.
-- **`PENDING_VERIFICATION`** — could not be confirmed from any source
-  available this session. Not asserted as fact anywhere else in this
-  repository. Per [ADR-0025](adrs/0025-pending-verification-discipline.md),
-  this status is the required substitute for inventing a commit SHA, a
-  paper citation, or an external claim.
+## Candidate comparison
 
-## 2. Ingredient research (build-standard requirement: 2 Ruvnet + 1 enterprise OSS + 1 frontier research mechanism)
+| Candidate | System-scale value | Required composition | Decision |
+|---|---|---|---|
+| Provenance Firebreak | incident reconstruction, calibrated containment, evidence, recovery | Sigstore + RuVector + RVF + split conformal | selected |
+| Attestation Linter | checks bundle fields | Sigstore only | rejected: utility-scale validator |
+| Vector Incident Search | retrieves similar alerts | RuVector only | rejected: one-feature service |
+| Release Receipt Generator | emits signed records | RVF only | rejected: wrapper without orchestration or recovery |
 
-### 2.1 Ruvnet component #1 — `ruvector-core` 2.4.0, Apache-2.0
+This capability is materially distinct from recent Dream Machine outputs: JitterMap governs retry admission, ToolRecall ranks tool retrieval, and EvoSeal evolves policy candidates. Provenance Firebreak instead performs signed-artifact incident containment across provenance, temporal lineage, calibrated risk, quarantine policy, evidence sealing, and recovery verification.
 
-**Stated by the task brief**: version 2.4.0, Apache-2.0, exposes `insert` /
-`search` / `get`. This project uses that exact surface as its incident-
-retrieval memory (see [pf-ruvector-adapter in architecture.md](architecture.md)
-and [DDD-06](ddd/06-incident-retrieval.md)): sealed incident records are
-`insert`-ed with an embedding of the lineage/attestation context, candidate
-historical incidents are `search`-ed by nearest neighbor at decision time,
-and the full incident record is `get`-ed by id once a candidate is selected
-for use as a calibration or planning input.
+## Primary sources and pinned inputs
 
-Attempted grounding this session: `search_ruvnet` (the RuvNet brain MCP
-tool) and the `ruvector` MCP server were both called as part of this
-project's research step and both failed to connect
-(`ruvnet-brain`: `CONNECT_TIMEOUT`; `ruvector`: `CONNECTION_CLOSED`). No
-additional API surface beyond `insert`/`search`/`get` is asserted. Exact
-function signatures, the embedding dimensionality, and the distance metric
-are `PENDING_VERIFICATION` and must be confirmed against the real
-`ruvector-core` 2.4.0 crate docs before `pf-ruvector-adapter` is implemented
-in Phase 2.
+- Sigstore Rust repository and tag source: <https://github.com/sigstore/sigstore-rs/tree/ac9e5774e07fbb5b74cfe8ca1b1aaf3a3417c997>. The published `sigstore 0.14.0` crate records this source SHA and Apache-2.0 license.
+- RuVector source for `ruvector-core 2.4.0`: <https://github.com/ruvnet/ruvector/tree/e3d82b19683a08c6392a2534bafc90927ca690c7>. The published crate records the MIT license and `crates/ruvector-core` source path.
+- RVF crypto source for `rvf-crypto 0.2.0`: <https://github.com/ruvnet/ruvector/tree/9fb3d2c63b19ac6950b931f4adb56834bf96c45d>. The published crate records the MIT OR Apache-2.0 license and `crates/rvf/rvf-crypto` source path.
+- Lei, G'Sell, Rinaldo, Tibshirani, and Wasserman, “Distribution-Free Predictive Inference for Regression”: <https://www.stat.cmu.edu/~ryantibs/papers/conformal.pdf>. This is the primary statistical basis for the split-conformal mechanism.
 
-### 2.2 Ruvnet component #2 — `rvf-crypto` 0.2.0, Apache-2.0
+The exact interface-to-test-to-ablation mapping is in [integration-matrix.md](integration-matrix.md). Versions and checksums are frozen in `Cargo.lock`.
 
-**Stated by the task brief**: version 0.2.0, Apache-2.0, provides
-sealing and tamper-rejection primitives ("RVF" = Ruvnet's cognitive-
-container format referenced in this machine's own `CLAUDE.md`). This
-project uses that surface to seal replay evidence (decision inputs,
-retrieved incidents, calibration scores, selected plan) into an
-append-only, tamper-evident record — see
-[pf-rvf-adapter / pf-evidence-ledger in architecture.md](architecture.md)
-and [DDD-10](ddd/10-evidence-sealing.md).
+## Frontier mechanism
 
-Same grounding attempt and same outcome as §2.1: `search_ruvnet` and the
-`ruvector` MCP server (which also surfaces RVF container tooling per this
-machine's `CLAUDE.md`) were unreachable this session. The exact seal/verify
-function names and the tamper-rejection error taxonomy are
-`PENDING_VERIFICATION`.
+The frontier mechanism is a split-conformal upper-risk gate, not a decorative score. `pf-calibration` orders frozen nonconformity scores and selects the finite-sample quantile determined by the requested miscoverage level. The bound directly changes the quarantine decision path. Its guarantee is marginal and depends on exchangeability; the project does not claim conditional coverage or production calibration from the small fixture.
 
-### 2.3 Enterprise OSS component — `sigstore` crate 0.14.0, from `sigstore/sigstore-rs`, Apache-2.0
+## Measurable hypotheses
 
-**From training knowledge, not live-verified this session**: `sigstore-rs`
-is the Rust client for the Sigstore project (keyless signing via a Fulcio-
-issued short-lived certificate bound to an OIDC identity, transparency
-logging via Rekor, and bundle verification combining both). It is
-maintained under the `sigstore` GitHub organization
-(`https://github.com/sigstore/sigstore-rs`) and published to crates.io as
-`sigstore` (`https://crates.io/crates/sigstore`), historically under the
-Apache-2.0 license. This project uses the real upstream verification types
-— certificate-chain verification against the Fulcio root, Rekor inclusion-
-proof checking, and bundle (DSSE envelope) verification — as the Sigstore
-boundary check in [pf-sigstore-adapter](architecture.md) and
-[DDD-03](ddd/03-attestation-trust-boundary.md), per the task's explicit
-requirement to use "real upstream types/interfaces," not a hand-rolled
-re-implementation of signature verification.
+| Removal | Expected degradation | Observed field |
+|---|---|---|
+| RuVector | analogue recall disappears | `analogous_recall=false` |
+| RVF | receipt cannot be verified | `evidence_verifiable=false` |
+| Sigstore | tier-0 containment policy becomes unsafe | `unsafe_tier0_actions=1` |
+| split conformal | calibrated risk evidence disappears | `calibrated_bound=false` |
+| enterprise-only baseline | no recall, calibration, or witness evidence | all three false |
+| Ruvnet-only baseline | no trusted provenance or calibrated policy | unsafe tier-0 action plus no bound |
 
-The exact 0.14.0 release commit SHA on `sigstore/sigstore-rs` is
-`PENDING_VERIFICATION` — it was not fetched this session and must not be
-invented. Phase 2 must pin it from `Cargo.lock` once the crate is actually
-added to a workspace.
+## Limitations
 
-### 2.4 Frontier research mechanism — split-conformal risk control
-
-**From training knowledge, not live-verified this session**: split-
-conformal prediction (holding out a calibration set, computing
-nonconformity scores, and taking an empirical quantile to get a
-distribution-free coverage guarantee) traces to Vovk, Gammerman, and
-Shafer's conformal prediction framework, with the "split" variant
-popularized by Lei, G'Sell, Rinaldo, Tibshirani, and Wasserman, "Distribution-
-Free Predictive Inference for Regression" (2018). The specific shape this
-project needs — a calibrated upper bound on a *risk/loss* (residual
-exposure after quarantine), not just a prediction interval — is "conformal
-risk control" as formalized in Angelopoulos, Bates, Candès, Jordan, and
-Lei, "Conformal Risk Control" (arXiv:2208.02814), which generalizes split-
-conformal calibration to monotone risk functions and is what this project
-cites as its risk-bound construction in [pf-calibration](architecture.md)
-and [DDD-07](ddd/07-risk-calibration.md).
-
-This citation is given with the verification caveat stated in §1: it was
-not re-fetched this session, so the arXiv identifier should be re-checked
-against `https://arxiv.org/abs/2208.02814` before it is used in any
-externally published material (e.g. [publication/](../publication/)).
-
-## 3. Novelty — comparison against named prior systems
-
-The task requires proving novelty against three named systems — JitterMap,
-ToolRecall, EvoSeal — and against "primitive validators" as a generic
-baseline class.
-
-**Disclosure**: no primary source for JitterMap, ToolRecall, or EvoSeal was
-located this session. Network research tools were denied and the model
-does not hold a confident, source-backed recollection of published systems
-with these exact names in the provenance/supply-chain-security space. Per
-the anti-fabrication requirement in this project's own constraints
-(§5 of [specification.md](specification.md), [ADR-0025](adrs/0025-pending-verification-discipline.md)),
-this document does **not** invent a description, URL, or paper citation for
-any of the three. Each is marked `PENDING_VERIFICATION` below. The
-comparison table states, for each, the narrowest claim Provenance Firebreak
-can defend without assuming unverified facts about the named system: that
-Provenance Firebreak's five success criteria (exact reachability,
-deterministic digest, calibrated coverage, cost beating quarantine-all,
-explicit ablations — [specification.md §4](specification.md)) are not
-satisfied by a name-matching architecture inferred from general industry
-practice, and that if the named system turns out to satisfy one of them,
-the gap narrows to exactly that criterion rather than invalidating the
-others. This is weaker than a sourced comparison and is reported as such
-rather than overstated.
-
-| System | Source status | What the name suggests it does | Criterion Provenance Firebreak claims it as novel on, if the inferred description holds |
-|--------|---------------|----------------------------------|---|
-| JitterMap | `PENDING_VERIFICATION` — no primary source located this session | Name suggests network/timing jitter mapping, not an artifact-to-service lineage graph with cryptographic trust-boundary verification. | No evidence it performs Sigstore-boundary-verified, tenant-isolated, exact-reachability closure over a temporal deployment graph with a calibrated risk bound gating admission. |
-| ToolRecall | `PENDING_VERIFICATION` — no primary source located this session | Name suggests tool-call/tool-use auditing or recall of prior tool invocations, not incident-retrieval-informed quarantine planning. | No evidence it ties retrieval to a statistically calibrated admission gate (split-conformal) rather than an uncalibrated similarity score. |
-| EvoSeal | `PENDING_VERIFICATION` — no primary source located this session | Name suggests evolutionary sealing — plausibly adjacent to evidence sealing, but no evidence it combines sealing with least-disruptive planning under a hard tier-0 availability constraint. | No evidence of a least-disruptive planner that is provably cheaper than quarantine-all while respecting a calibrated risk bound; sealing alone does not establish that. |
-| Primitive validators | Generic baseline class, not a specific system — no citation needed | Signature-presence checks, allow/deny lists, or single-hop "what did this builder touch" lookups with no temporal graph, no calibration, no planning. | Primitive validators have no notion of transitive closure over time-bounded deployment edges, no calibrated coverage guarantee, and typically degrade to quarantine-all or quarantine-nothing with no cost model. Provenance Firebreak's §4 success criteria in [specification.md](specification.md) are, by construction, criteria a primitive validator does not attempt. |
-
-This table must be revisited the first time network research tools are
-available: replace every `PENDING_VERIFICATION` row with a sourced
-description and a primary URL, or retract the novelty claim for that row
-if the source contradicts the inferred description.
-
-## 4. Open research items carried into Phase 2
-
-1. Confirm `ruvector-core` 2.4.0 and `rvf-crypto` 0.2.0 exact API signatures
-   once `search_ruvnet`/`ruvector` MCP connectivity is restored.
-2. Confirm the `sigstore` 0.14.0 commit SHA from a real `Cargo.lock` once the
-   crate is vendored into a workspace (Phase 2; no workspace exists yet).
-3. Re-verify the conformal-risk-control citation (§2.4) against a live
-   fetch of the arXiv page.
-4. Locate and re-run the novelty comparison in §3 against real primary
-   sources for JitterMap, ToolRecall, and EvoSeal.
+- The checked-in Sigstore fixture is structurally valid but intentionally untrusted; the test proves a live library verification-rejection boundary, not an online Fulcio/Rekor production ceremony.
+- Incident vectors are deterministic, domain-authored features rather than learned embeddings.
+- The fixture and calibration set are deliberately small and frozen; results establish reproducibility, not external validity.
+- `ruvector-core 2.4.0` reaches the recorded source commit through crates.io rather than a Git dependency because no matching upstream tag existed at validation time.
+- The `cargo deny` policy explicitly acknowledges the transitive unmaintained `bincode` advisory in RuVector and RSA timing advisory in Sigstore; rationale is recorded in `deny.toml` and validation evidence.
