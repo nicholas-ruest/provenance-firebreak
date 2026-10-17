@@ -1,0 +1,16 @@
+[package]
+name = "pf-evaluation"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+pf-application = { path = "../pf-application" }
+serde.workspace = true
+serde_json.workspace = true
+
+pf-evidence = { path = "../pf-evidence" }
+pf-planning = { path = "../pf-planning" }
+[lints]
+workspace = true

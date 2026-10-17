@@ -1,0 +1,17 @@
+[package]
+name = "pf-adapter-sigstore"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+pf-attestation = { path = "../pf-attestation" }
+sigstore.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+pf-identity = { path = "../pf-identity" }
+pf-ports = { path = "../pf-ports" }
+[lints]
+workspace = true

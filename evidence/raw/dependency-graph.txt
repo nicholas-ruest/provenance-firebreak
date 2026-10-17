@@ -1,0 +1,26 @@
+workspace_members 22
+reachable_from_cli_or_evaluation 22
+unreachable []
+internal_edges 48
+pf-adapter-ruvector -> pf-events,pf-identity
+pf-adapter-rvf -> pf-events,pf-identity
+pf-adapter-sigstore -> pf-attestation,pf-identity,pf-ports
+pf-application -> pf-adapter-ruvector,pf-adapter-rvf,pf-adapter-sigstore,pf-artifact,pf-attestation,pf-calibration,pf-events,pf-evidence,pf-graph,pf-identity,pf-lineage,pf-planning,pf-policy,pf-ports,pf-recovery
+pf-artifact -> pf-identity
+pf-attestation -> pf-artifact,pf-identity
+pf-calibration ->
+pf-cli -> pf-config,pf-service
+pf-config ->
+pf-evaluation -> pf-application,pf-evidence,pf-planning
+pf-events -> pf-identity
+pf-evidence -> pf-events
+pf-exposure -> pf-lineage
+pf-graph -> pf-exposure,pf-lineage
+pf-identity ->
+pf-lineage -> pf-artifact,pf-identity
+pf-planning -> pf-exposure,pf-policy
+pf-policy -> pf-exposure
+pf-ports -> pf-attestation,pf-events
+pf-recovery -> pf-evidence
+pf-service -> pf-application,pf-config,pf-telemetry
+pf-telemetry -> pf-events,pf-identity

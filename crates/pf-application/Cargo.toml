@@ -1,0 +1,30 @@
+[package]
+name = "pf-application"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+pf-adapter-sigstore = { path = "../pf-adapter-sigstore" }
+pf-adapter-ruvector = { path = "../pf-adapter-ruvector" }
+pf-adapter-rvf = { path = "../pf-adapter-rvf" }
+pf-graph = { path = "../pf-graph" }
+pf-planning = { path = "../pf-planning" }
+pf-calibration = { path = "../pf-calibration" }
+pf-evidence = { path = "../pf-evidence" }
+pf-recovery = { path = "../pf-recovery" }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tempfile.workspace = true
+
+pf-artifact = { path = "../pf-artifact" }
+pf-identity = { path = "../pf-identity" }
+pf-lineage = { path = "../pf-lineage" }
+pf-policy = { path = "../pf-policy" }
+pf-events = { path = "../pf-events" }
+pf-attestation = { path = "../pf-attestation" }
+pf-ports = { path = "../pf-ports" }
+[lints]
+workspace = true

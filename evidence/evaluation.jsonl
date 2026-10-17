@@ -1,0 +1,8 @@
+{"seed":20261016,"workload":"signed-lineage-incident-v1","elapsed_us":239058}
+{"mode":"combined","unsafe_tier0_actions":0,"evidence_verifiable":true,"calibrated_bound":true,"analogous_recall":true,"utility":0.16666666666666674}
+{"mode":"without-ruvector","unsafe_tier0_actions":0,"evidence_verifiable":true,"calibrated_bound":true,"analogous_recall":false,"utility":0.16666666666666674}
+{"mode":"without-rvf","unsafe_tier0_actions":0,"evidence_verifiable":false,"calibrated_bound":true,"analogous_recall":true,"utility":0.16666666666666674}
+{"mode":"without-sigstore","unsafe_tier0_actions":1,"evidence_verifiable":true,"calibrated_bound":true,"analogous_recall":true,"utility":0.16666666666666674}
+{"mode":"without-conformal","unsafe_tier0_actions":0,"evidence_verifiable":true,"calibrated_bound":false,"analogous_recall":true,"utility":0.16666666666666674}
+{"mode":"enterprise-only","unsafe_tier0_actions":0,"evidence_verifiable":false,"calibrated_bound":false,"analogous_recall":false,"utility":0.16666666666666674}
+{"mode":"ruvnet-only","unsafe_tier0_actions":1,"evidence_verifiable":true,"calibrated_bound":false,"analogous_recall":true,"utility":0.16666666666666674}
